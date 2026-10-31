@@ -1,0 +1,1 @@
+{"compilerOptions":{"noEmit":true,"rootDir":"."},"exclude":["dist","node_modules"],"extends":"./tsconfig.json","include":["src/**/*.ts","tests/**/*.ts","scripts/**/*.js"]}

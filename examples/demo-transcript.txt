@@ -1,0 +1,29 @@
+$ diffgate --version
+diffgate 0.1.0
+$ git checkout -q pr
+
+$ diffgate check --base 74d24589b9d81f111d286c3e5b2dcd7f2ab06884
+diffgate 0.1.0 -- base 74d24589b9d81f111d286c3e5b2dcd7f2ab06884 .. ee60af8
+checked 3 file(s), 3 touched function(s)
+
+FAIL: 3 violation(s)
+
+GATE        LOCATION            MESSAGE
+----------  ------------------  ----------------------------------------
+complexity  checkout.py:1       function 'process_order' complexity 13 exceeds max 10
+growth      data/routes.json:2  file grew by +622 lines in one diff (limit 500); split this change
+dupe        utils.go:28         duplicated block of 106 tokens also at utils.go:11
+(exit code 1)
+$ diffgate check --base 74d24589b9d81f111d286c3e5b2dcd7f2ab06884 --format github
+::error file=checkout.py,line=1::[diffgate/complexity] function 'process_order' complexity 13 exceeds max 10
+::error file=data/routes.json,line=2::[diffgate/growth] file grew by +622 lines in one diff (limit 500); split this change
+::error file=utils.go,line=28::[diffgate/dupe] duplicated block of 106 tokens also at utils.go:11
+::notice::[diffgate] 3 violation(s) found
+(exit code 1)
+$ git checkout -q fixed
+
+$ diffgate check --base 74d24589b9d81f111d286c3e5b2dcd7f2ab06884
+diffgate 0.1.0 -- base 74d24589b9d81f111d286c3e5b2dcd7f2ab06884 .. d206003
+checked 4 file(s), 7 touched function(s)
+
+PASS: all gates green.

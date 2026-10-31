@@ -1,0 +1,1 @@
+{"description":"diffgate check on head/ vs base/ must fail with exactly these 3 violations","violations":[{"file":"checkout.py","gate":"complexity","messageContains":["process_order","complexity 13"]},{"file":"utils.go","gate":"dupe","messageContains":["also at"]},{"file":"data/routes.json","gate":"growth","messageContains":["+622"]}]}
