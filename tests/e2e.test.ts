@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { cpSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { execFileSync } from 'node:child_process';
-import { git } from './helpers.js';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { git, makeRepo } from './helpers.js';
 
 // tests run from the package root (npm test); fall back to the test dir
 const PKG_ROOT =
@@ -93,6 +93,26 @@ describe('e2e: sample diff', () => {
       assert.equal(code, 0, stdout);
       assert.match(stdout, /process_order/);
       assert.match(stdout, /complexity 13/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('auto base detection keeps git probing quiet on stderr', () => {
+    // a bare repo with no origin and no well-known branch names: every
+    // candidate base ref fails, which must be silent, not "fatal:" noise.
+    const { dir } = makeRepo(
+      { 'a.js': 'const x = 1;\n' },
+      { 'a.js': 'const x = 1;\nconst y = 2;\n' }
+    );
+    try {
+      const r = spawnSync('node', [CLI, 'check'], {
+        encoding: 'utf8',
+        cwd: dir,
+      });
+      assert.equal(r.status, 0, r.stderr);
+      assert.match(r.stdout, /PASS/);
+      assert.equal(r.stderr, '', 'base probing must not leak git errors');
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
