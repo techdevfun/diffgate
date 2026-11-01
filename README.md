@@ -106,7 +106,7 @@ Honest comparison, checked 2026-10-31:
 ```sh
 npm install
 npm run build     # tsc, strict
-npm test          # 38 tests, all green
+npm test          # 39 tests, all green
 ```
 
 `examples/sample-diff/` is a synthetic base/pr/fixed repo exercising every
