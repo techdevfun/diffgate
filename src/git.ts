@@ -116,7 +116,9 @@ export function resolveBase(explicit: string | undefined, cwd: string): string {
   const head = git(cwd, ['rev-parse', 'HEAD']).trim();
   for (const candidate of ['origin/main', 'origin/master', 'main', 'master']) {
     try {
-      const mb = git(cwd, ['merge-base', 'HEAD', candidate]).trim();
+      // candidates are expected to fail (e.g. no origin in a local repo) --
+      // keep the probe quiet so `check` doesn't print scary "fatal:" noise
+      const mb = git(cwd, ['merge-base', 'HEAD', candidate], true).trim();
       // a merge-base equal to HEAD means we are sitting on that branch --
       // it tells us nothing about the fork point, so keep looking
       if (mb && mb !== head) return mb;
